@@ -6,11 +6,7 @@ import cn.mayun.book.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
-import java.util.Map;
 
 @Repository
 public class UserDAO {
@@ -25,6 +21,20 @@ public class UserDAO {
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
+    }
+
+    public boolean addUser(String name, String password) {
+        if (getByNameAndPassword(name, password) != null) {
+            return false;
+        }
+        String sql = "INSERT INTO user(name, password, is_admin) VALUES(?,?, 0)";
+        int aff = template.update(sql, name, password);
+        return aff == 1;
+    }
+
+    public boolean changePassword(int uid, String password) {
+        String sql = "UPDATE user SET password=? WHERE id=?";
+        return template.update(sql, password, uid) == 1;
     }
 
 }
