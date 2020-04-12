@@ -16,6 +16,14 @@ public class BookDAO {
     @Autowired
     private JdbcTemplate template;
 
+    public boolean add(Book book) {
+        String sql = "INSERT INTO book(title, price, img_src, comment, status) " +
+                "VALUES (?,?,?,?,?)";
+        int aff = template.update(sql, book.getTitle(), book.getPrice(),
+                book.getImgSrc(), book.getComment(), book.getStatus());
+        return aff == 1;
+    }
+
     public List<Book> list() {
         String sql = "SELECT id,title,comment,price,img_src,status FROM book WHERE status=?";
         return template.query(sql, new BookMapper(), BookStatusEnum.Normal.getId());

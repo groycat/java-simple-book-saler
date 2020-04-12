@@ -15,7 +15,7 @@ public class UserDAO {
     private JdbcTemplate template;
 
     public User getByNameAndPassword(String name, String password) {
-        String sql = "SELECT id,name,password FROM user WHERE name=? AND password=?";
+        String sql = "SELECT id,name,password,is_admin FROM user WHERE name=? AND password=?";
         try {
             return template.queryForObject(sql, new UserMapper(), name, password);
         } catch (EmptyResultDataAccessException e) {
@@ -35,6 +35,15 @@ public class UserDAO {
     public boolean changePassword(int uid, String password) {
         String sql = "UPDATE user SET password=? WHERE id=?";
         return template.update(sql, password, uid) == 1;
+    }
+
+    public User getById(int uid) {
+        String sql = "SELECT id,name,password,is_admin FROM user WHERE id=?";
+        try {
+            return template.queryForObject(sql, new UserMapper(), uid);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
 }

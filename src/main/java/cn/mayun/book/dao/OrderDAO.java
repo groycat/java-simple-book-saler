@@ -5,6 +5,7 @@ import cn.mayun.book.enums.BookStatusEnum;
 import cn.mayun.book.enums.OrderStatusEnum;
 import cn.mayun.book.model.Book;
 import cn.mayun.book.model.Order;
+import cn.mayun.book.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -20,6 +21,9 @@ public class OrderDAO {
 
     @Autowired
     private BookDAO bookDAO;
+
+    @Autowired
+    private UserDAO userDAO;
 
     public boolean add(Order order) {
         Book book = bookDAO.get(order.getBid());
@@ -47,10 +51,11 @@ public class OrderDAO {
     }
 
     public List<Order> list(int uid) {
-        String sql = "SELECT id,uid,accept_name,create_date,phone,address,bid,price,status FROM `order` WHERE uid=? AND" +
-                " (status=? OR status=?)";
+        String sql = "SELECT id,uid,accept_name,create_date,phone,address,bid,price,status " +
+                "FROM `order` " +
+                "WHERE uid=? AND `status`!=?";
         List<Order> orders = template.query(sql, new OrderMapper(),
-                uid, OrderStatusEnum.UnConfirm, OrderStatusEnum.Confirm);
+                uid, OrderStatusEnum.Done.getId());
         // 这里需要为订单设置书本标题
         for (Order order : orders) {
             Book book = bookDAO.getById(order.getBid());
@@ -58,6 +63,31 @@ public class OrderDAO {
         }
 
         return orders;
+    }
+
+    public List<Order> listAll() {
+        String sql = "SELECT id,uid,accept_name,create_date,phone,address,bid,price,status FROM `order`";
+        List<Order> orders = template.query(sql, new OrderMapper());
+        for (Order order : orders) {
+            Book book = bookDAO.getById(order.getBid());
+            order.setTitle(book.getTitle());
+
+            User user = userDAO.getById(order.getUid());
+            order.setUserName(user.getName());
+        }
+        return orders;
+    }
+
+    public boolean confirm(int id) {
+        String sql = "UPDATE `order` SET status=? WHERE id=?";
+        int affect = template.update(sql, OrderStatusEnum.Confirm.getId(), id);
+        return affect == 1;
+    }
+
+    public boolean done(int id) {
+        String sql = "UPDATE `order` SET status=? WHERE id=?";
+        int affect = template.update(sql, OrderStatusEnum.Done.getId(), id);
+        return affect == 1;
     }
 
 }

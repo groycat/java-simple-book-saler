@@ -15,6 +15,15 @@ public class Order {
     private String acceptName;
 
     private String title;
+    private String userName;
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
 
     public void setTitle(String title) {
         this.title = title;

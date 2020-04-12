@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -27,28 +27,32 @@
         <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script><![endif]-->
   </head>
   <body>
-    <!-- navbar-->
-    <header class="header mb-5">
-      <!--
-      *** TOPBAR ***
-      _________________________________________________________
-      -->
-      <div id="top">
-        <div class="container">
-          <div class="row">
-            <div class="col-lg-6 offer mb-3 mb-lg-0"><a href="#" class="btn btn-success btn-sm">二手书列表</a></div>
-            <div class="col-lg-6 text-center text-lg-right">
-              <ul class="menu list-inline mb-0">
-                <li class="list-inline-item"><a href="#" data-toggle="modal" data-target="#login-modal">登录/注册</a></li>
-                <li class="list-inline-item"><a href="register.html">我的订单</a></li>
-                <li class="list-inline-item"><a href="contact.html">修改密码</a></li>
-              </ul>
-            </div>
-          </div>
+
+  <div id="top">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-6 offer mb-3 mb-lg-0">
+          <a href="/admin/" class="btn btn-success btn-sm">主页</a>
+          <a href="/admin/book/addBookPage" class="btn btn-success btn-sm">增加二手书</a>
+          <a href="/admin/book/list" class="btn btn-success btn-sm">管理二手书</a>
+          <a href="/admin/order/list" class="btn btn-success btn-sm">管理订单</a>
         </div>
-        <!-- *** TOP BAR END ***-->
+        <div class="col-lg-6 text-center text-lg-right">
+          <ul class="menu list-inline mb-0">
+
+            <li th:if="${session.user != null}" class="list-inline-item"><a th:text="'欢迎，' + ${session.user.name}" href="#">欢迎</a></li>
+            <li th:if="${session.user == null}" class="list-inline-item"><a href="/loginPage">您尚未登录</a></li>
+
+            <li th:if="${session.user == null}" class="list-inline-item"><a href="/loginPage">登录/注册</a></li>
+            <li th:if="${session.user != null}" class="list-inline-item"><a href="/user/changePasswordPage">修改密码</a></li>
+            <li th:if="${session.user != null}" class="list-inline-item"><a href="/user/logout">注销</a></li>
+          </ul>
+        </div>
       </div>
-      
+    </div>
+    <!-- *** TOP BAR END ***-->
+  </div>
+
     <div id="all">
       <div id="content">
         <div class="container">
@@ -58,10 +62,17 @@
               <div id="error-page" class="row">
                 <div class="col-md-6 mx-auto">
                   <div class="box text-center py-5">
-                    <h3>找不到这个页面</h3>
-                    <h4 class="text-muted">错误404：找不到页面</h4>
-                    <p class="text-center">这个页面丢失了，请去我们的二手书列表页吧！</p>
-                    <p class="buttons"><a href="index.html" class="btn btn-primary"><i class="fa fa-home"></i>二手书列表</a></p>
+                    <!--/*@thymesVar id="suc" type="java.lang.String"*/-->
+                    <!--/*@thymesVar id="info" type="java.lang.String"*/-->
+                    <p class="lead" style="color: green;">
+                      欢迎光临，管理员
+                    </p>
+                    <p class="buttons">
+                      <a href="/admin/" class="btn btn-primary"><i class="fa fa-home"></i>主页</a>
+                      <a href="/admin/book/addBookPage" class="btn btn-primary">增加二手书</a>
+                      <a href="/admin/book/list" class="btn btn-primary">管理二手书</a>
+                      <a href="/admin/order/list" class="btn btn-primary">管理订单</a>
+                    </p>
                   </div>
                 </div>
               </div>
@@ -70,7 +81,8 @@
         </div>
       </div>
     </div>
-    
+
+ 
     <!-- *** COPYRIGHT END ***-->
     <!-- JavaScript files-->
     <script src="/vendor/jquery/jquery.min.js"></script>

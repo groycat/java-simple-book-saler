@@ -31,9 +31,29 @@ public class AuthController {
             return "login";
         }
 
+        // 管理员用户
+        if (user.getIsAdmin() == 1) {
+            return "admin_welcome";
+        }
+
         modelMap.put("books", bookDAO.list());
 
         return "list";
+    }
+
+    @RequestMapping("/admin/")
+    public String adminIndex(ModelMap modelMap,
+                        HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "login";
+        }
+
+        // 管理员用户
+        if (user.getIsAdmin() == 1) {
+            return "admin_welcome";
+        }
+        return Result.fail(modelMap, "您无权访问！");
     }
 
     @RequestMapping("/user/register")
@@ -67,6 +87,12 @@ public class AuthController {
 
         // 登录成功，user落session
         session.setAttribute("user", user);
+
+        System.out.println(user.getIsAdmin());
+        // 管理员用户
+        if (user.getIsAdmin() == 1) {
+            return "admin_welcome";
+        }
 
         modelMap.put("books", bookDAO.list());
         return "list";
