@@ -1,5 +1,6 @@
 package cn.mayun.book.util;
 
+import org.springframework.util.ClassUtils;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,8 +20,8 @@ public class FileUtil {
         }
         String suffixName = fileName.substring(fileName.lastIndexOf("."));
         String uuid = UUID.randomUUID().toString().replaceAll("-","");
-        String filepath = ResourceUtils.getURL("classpath:").getPath() + "img" +
-                File.separator + uuid + suffixName;
+        String filepath = System.getProperty("user.dir")
+        + File.separator + "img" + File.separator + uuid + suffixName;
         System.out.println("save to:" + filepath);
 
         File dest = new File(filepath);
